@@ -39,28 +39,32 @@ async def introspect():
         inflect_eng.classical(names=0)
         for table in reversed(metadata.sorted_tables):
             field_dict: Dict[str, (Any, Field)] = {
-                    "id": ( uuid.UUID, Field(
+                "id": (
+                    uuid.UUID,
+                    Field(
                         default=None,
                         sa_column=Column(
                             UUID, primary_key=True, server_default=FetchedValue()
-                        )),
-                    )
-                }
-            model : SQLModel = create_model(
+                        ),
+                    ),
+                )
+            }
+            model: SQLModel = create_model(
                 to_pascal(inflect_eng.singular_noun(table.name)),
                 __base__=SQLModel,
                 __cls_kwargs__={"table": True, "__tablename__": table.name},
-                __tablename__ =(ClassVar[str], table.name),
-                **field_dict
+                __tablename__=(ClassVar[str], table.name),
+                **field_dict,
             )
             ic(model.__tablename__)
             MODEL_REGISTRY[table.name] = model
 
+
 def create_endpoint(model: SQLModel):
     async def endpoint(request: Request, session: Session = Depends(get_session)):
-        #ic(session)
-        #ic(request)
-        #ic(model)
+        # ic(session)
+        # ic(request)
+        # ic(model)
         statement = select(model)
         results = session.exec(statement)
         return results

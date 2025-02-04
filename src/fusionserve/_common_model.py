@@ -30,11 +30,13 @@ async_engine = create_async_engine(
 
 from sqlalchemy import event
 
-@event.listens_for(engine, 'before_cursor_execute')
-#@event.listens_for(async_engine, 'before_cursor_execute')
+
+@event.listens_for(engine, "before_cursor_execute")
+# @event.listens_for(async_engine, 'before_cursor_execute')
 def do_set_role(conn, cursor, statement, parameters, context, executemany):
     "listen for the 'before_cursor_execute' event"
     cursor.execute("SET ROLE 'fras.marco'")
+
 
 async def get_async_session():
     async_session = async_sessionmaker(
