@@ -10,7 +10,7 @@ from fastapi.responses import PlainTextResponse
 from prometheus_client import REGISTRY, generate_latest
 
 from .config import settings
-from .db import MODEL_REGISTRY, add_routes, introspect
+from .db import add_routes
 
 _logger = logging.getLogger("uvicorn.error")
 _logger.setLevel(os.environ.get("LOG_LEVEL", "ERROR"))
@@ -19,7 +19,7 @@ _logger.setLevel(os.environ.get("LOG_LEVEL", "ERROR"))
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # ---- startup ----
-    await add_routes(app)
+    add_routes(app)
     yield
 
 
